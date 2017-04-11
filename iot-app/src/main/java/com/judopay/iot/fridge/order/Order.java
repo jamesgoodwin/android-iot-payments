@@ -8,6 +8,8 @@ public class Order {
 
     private String total;
     private String description;
+    private String consumerReference;
+    private String paymentToken;
 
     public Order(String total, String description) {
         this.total = total;

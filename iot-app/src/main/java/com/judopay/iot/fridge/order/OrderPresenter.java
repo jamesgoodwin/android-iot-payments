@@ -1,10 +1,16 @@
 package com.judopay.iot.fridge.order;
 
 import android.content.Context;
+import android.util.Log;
 
+import com.google.gson.Gson;
 import com.judopay.DeviceDna;
 import com.judopay.devicedna.Credentials;
-import com.judopay.iot.fridge.device.DeviceRegisterRequest;
+
+import okhttp3.OkHttpClient;
+import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 import static rx.android.schedulers.AndroidSchedulers.mainThread;
 import static rx.schedulers.Schedulers.io;
@@ -18,7 +24,15 @@ public class OrderPresenter {
     OrderPresenter(OrderView orderView, OrderRepository orderRepository) {
         this.orderView = orderView;
         this.orderRepository = orderRepository;
-        this.iotApiService = new MockIotApiService();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .addConverterFactory(GsonConverterFactory.create(new Gson()))
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .baseUrl("http://172.27.132.92:3000/")
+                .client(new OkHttpClient.Builder().build())
+                .build();
+
+        this.iotApiService = retrofit.create(IotApiService.class);
     }
 
     public void order(Order order) {
@@ -28,7 +42,7 @@ public class OrderPresenter {
                 .subscribe(() -> iotApiService.order(order)
                         .subscribeOn(io())
                         .observeOn(mainThread())
-                        .subscribe(orderResult -> showOrders()));
+                        .subscribe(orderResult -> showOrders(), throwable -> Log.e("Judo", "Error creating order", throwable)));
     }
 
     private void showOrders() {
@@ -47,10 +61,11 @@ public class OrderPresenter {
                 .observeOn(mainThread())
                 .subscribe(deviceId -> {
                     orderView.showDeviceId(deviceId);
-                    iotApiService.registerDevice(new DeviceRegisterRequest(deviceId))
-                            .subscribeOn(io())
-                            .observeOn(mainThread())
-                            .subscribe(orderView::showDeviceRegistration);
+//                    iotApiService.registerDevice(new DeviceRegisterRequest(deviceId))
+//                            .subscribeOn(io())
+//                            .observeOn(mainThread())
+//                            .subscribe(orderView::showDeviceRegistration,
+//                                    throwable -> Log.e("Judo", "Error getting device ID", throwable));
                 });
     }
 }

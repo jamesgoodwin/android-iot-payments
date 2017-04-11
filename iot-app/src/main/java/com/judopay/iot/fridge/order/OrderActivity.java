@@ -4,11 +4,17 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.widget.TextView;
 
+import com.google.android.things.contrib.driver.button.Button;
+import com.google.android.things.contrib.driver.ht16k33.AlphanumericDisplay;
+import com.google.android.things.contrib.driver.ht16k33.Ht16k33;
+import com.google.android.things.contrib.driver.rainbowhat.RainbowHat;
 import com.judopay.iot.fridge.R;
 import com.judopay.iot.fridge.device.DeviceRegisterResult;
 
+import java.io.IOException;
 import java.util.List;
 
 public class OrderActivity extends AppCompatActivity implements OrderView {
@@ -38,8 +44,28 @@ public class OrderActivity extends AppCompatActivity implements OrderView {
         orderService = new OrderService(this, orderRepository);
         orderService.start();
 
-        initializeOrderButton();
+        try {
+            initializeOrderButton();
+            initializeScreen("BEER");
+        } catch (Exception e) {
+            Log.e("Judo", "Error initializing view", e);
+        }
+
         getDeviceId();
+    }
+
+    private void initializeScreen(String message) throws IOException {
+        AlphanumericDisplay segment = RainbowHat.openDisplay();
+        segment.setBrightness(Ht16k33.HT16K33_BRIGHTNESS_MAX);
+        segment.display(message);
+        segment.setEnabled(true);
+        segment.close();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        orderService.stop();
     }
 
     @Override
@@ -54,16 +80,26 @@ public class OrderActivity extends AppCompatActivity implements OrderView {
 
     @Override
     public void showDeviceRegistration(DeviceRegisterResult deviceRegisterResult) {
-        if("Registered".equals(deviceRegisterResult.getStatus())) {
+        if ("Registered".equals(deviceRegisterResult.getStatus())) {
             deviceRegistrationStatusText.setText("Yes");
         } else {
             deviceRegistrationStatusText.setText("No");
         }
     }
 
-    private void initializeOrderButton() {
-        findViewById(R.id.order_button)
-                .setOnClickListener(view -> orderPresenter.order(new Order("Beer", "20.00")));
+    private void initializeOrderButton() throws IOException {
+        Button button = RainbowHat.openButton(RainbowHat.BUTTON_A);
+
+        button.setOnButtonEventListener((button1, pressed) -> {
+            if (pressed) {
+                orderBeer();
+            }
+        });
+    }
+
+    private void orderBeer() {
+        Order beer = new Order("Beer", "20.00");
+        orderPresenter.order(beer);
     }
 
     private void getDeviceId() {
