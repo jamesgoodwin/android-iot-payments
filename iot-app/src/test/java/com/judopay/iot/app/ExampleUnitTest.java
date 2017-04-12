@@ -1,4 +1,4 @@
-package com.judopay.iot.fridge;
+package com.judopay.iot.app;
 
 import org.junit.Test;
 

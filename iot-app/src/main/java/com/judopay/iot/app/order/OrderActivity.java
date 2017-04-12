@@ -1,21 +1,25 @@
-package com.judopay.iot.fridge.order;
+package com.judopay.iot.app.order;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 
 import com.google.android.things.contrib.driver.button.Button;
 import com.google.android.things.contrib.driver.ht16k33.AlphanumericDisplay;
 import com.google.android.things.contrib.driver.ht16k33.Ht16k33;
 import com.google.android.things.contrib.driver.rainbowhat.RainbowHat;
-import com.judopay.iot.fridge.R;
-import com.judopay.iot.fridge.device.DeviceRegisterResult;
+import com.judopay.iot.app.R;
+import com.judopay.iot.app.device.DeviceRegisterResult;
 
 import java.io.IOException;
 import java.util.List;
+
+import static android.text.TextUtils.isEmpty;
 
 public class OrderActivity extends AppCompatActivity implements OrderView {
 
@@ -23,6 +27,7 @@ public class OrderActivity extends AppCompatActivity implements OrderView {
     private RecyclerView ordersRecyclerView;
     private TextView deviceIdText;
     private TextView deviceRegistrationStatusText;
+    private View orderButton;
 
     private OrderService orderService;
 
@@ -38,6 +43,7 @@ public class OrderActivity extends AppCompatActivity implements OrderView {
         deviceIdText = (TextView) findViewById(R.id.device_id_text);
         deviceRegistrationStatusText = (TextView) findViewById(R.id.device_registration_status_text);
         ordersRecyclerView = (RecyclerView) findViewById(R.id.orders_recycler_view);
+        orderButton = findViewById(R.id.order_button);
 
         ordersRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -46,7 +52,7 @@ public class OrderActivity extends AppCompatActivity implements OrderView {
 
         try {
             initializeOrderButton();
-            initializeScreen("BEER");
+            initializeScreen();
         } catch (Exception e) {
             Log.e("Judo", "Error initializing view", e);
         }
@@ -54,10 +60,10 @@ public class OrderActivity extends AppCompatActivity implements OrderView {
         getDeviceId();
     }
 
-    private void initializeScreen(String message) throws IOException {
+    private void initializeScreen() throws IOException {
         AlphanumericDisplay segment = RainbowHat.openDisplay();
         segment.setBrightness(Ht16k33.HT16K33_BRIGHTNESS_MAX);
-        segment.display(message);
+        segment.display("BEER");
         segment.setEnabled(true);
         segment.close();
     }
@@ -75,6 +81,7 @@ public class OrderActivity extends AppCompatActivity implements OrderView {
 
     @Override
     public void showDeviceId(String deviceId) {
+        orderButton.setEnabled(!isEmpty(deviceId));
         deviceIdText.setText(deviceId);
     }
 

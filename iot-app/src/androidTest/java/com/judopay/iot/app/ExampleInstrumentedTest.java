@@ -1,4 +1,4 @@
-package com.judopay.iot.fridge;
+package com.judopay.iot.app;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

@@ -1,10 +1,9 @@
-package com.judopay.iot.fridge.order;
+package com.judopay.iot.app.order;
 
 import java.util.List;
 
 import rx.Completable;
 import rx.Observable;
-import rx.Single;
 
 interface OrderRepository {
 

@@ -1,10 +1,10 @@
-package com.judopay.iot.fridge.order;
+package com.judopay.iot.app.order;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
-import com.judopay.iot.fridge.R;
+import com.judopay.iot.app.R;
 
 class OrderViewHolder extends RecyclerView.ViewHolder {
 

@@ -1,20 +1,14 @@
-package com.judopay.iot.fridge.order;
+package com.judopay.iot.app.order;
 
 import android.content.Context;
 
 import com.judopay.Judo;
 import com.judopay.JudoApiService;
 import com.judopay.model.Currency;
-import com.judopay.model.Receipt;
 import com.judopay.model.TokenRequest;
 
-import java.util.List;
-
 import rx.Observable;
-import rx.Single;
 import rx.Subscription;
-import rx.functions.Action1;
-import rx.functions.Func1;
 
 import static com.judopay.api.JudoApiServiceFactory.createApiService;
 import static java.util.concurrent.TimeUnit.SECONDS;

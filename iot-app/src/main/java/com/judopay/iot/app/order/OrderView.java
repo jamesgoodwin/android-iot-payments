@@ -1,6 +1,6 @@
-package com.judopay.iot.fridge.order;
+package com.judopay.iot.app.order;
 
-import com.judopay.iot.fridge.device.DeviceRegisterResult;
+import com.judopay.iot.app.device.DeviceRegisterResult;
 
 import java.util.List;
 

@@ -7,3 +7,4 @@
 /build
 /captures
 .externalNativeBuild
+/iot-app/google-services.json

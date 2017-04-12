@@ -1,4 +1,4 @@
-package com.judopay.iot.fridge.order;
+package com.judopay.iot.app.order;
 
 import java.util.ArrayList;
 import java.util.List;

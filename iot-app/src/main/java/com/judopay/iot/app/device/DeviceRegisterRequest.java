@@ -1,4 +1,4 @@
-package com.judopay.iot.fridge.device;
+package com.judopay.iot.app.device;
 
 public class DeviceRegisterRequest {
 
